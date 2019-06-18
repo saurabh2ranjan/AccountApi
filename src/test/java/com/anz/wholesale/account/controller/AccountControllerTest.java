@@ -38,11 +38,6 @@ public class AccountControllerTest {
     @MockBean
     private AccountService accountService;
 
-    @Before
-    public void setUp() {
-        //mockMvc = MockMvcBuilders.standaloneSetup()
-    }
-
     @Test
     public void givenUserId_whenGetAccount_thenReturnJsonArray() throws Exception {
         Mockito.when(accountService.getAccounts("user1", PageRequest.of(0, 25))).thenReturn(getAccountResponseList());
