@@ -113,4 +113,4 @@ Running test(s)[End Point Testing and Mockito/Junit with 90% code coverage]
     
       http://localhost:8081/h2
       
-      username = sa,      password =
+        jdbc url = jdbc:h2:mem:testdb, username = sa, password =
