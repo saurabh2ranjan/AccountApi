@@ -22,7 +22,6 @@ public class TransactionMapper {
     public static TransactionResponse toTransactionResponse(Transaction transaction) {
         TransactionResponse transactionResponse = TransactionResponse.builder().build();
         BeanUtils.copyProperties(transaction, transactionResponse);
-        transactionResponse.setAccountId(transaction.getAccount().getId());
         transactionResponse.setAccountNumber(transaction.getAccount().getAccountNumber());
         transactionResponse.setAccountName(transaction.getAccount().getAccountName());
         return transactionResponse;

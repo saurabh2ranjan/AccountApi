@@ -3,7 +3,6 @@ package com.anz.wholesale.account.controller;
 import com.anz.wholesale.account.jsonbean.AccountResponse;
 import com.anz.wholesale.account.jsonbean.TransactionResponse;
 import com.anz.wholesale.account.service.AccountService;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
@@ -14,8 +13,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MockMvcBuilder;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -40,28 +37,87 @@ public class AccountControllerTest {
 
     @Test
     public void givenUserId_whenGetAccount_thenReturnJsonArray() throws Exception {
-        Mockito.when(accountService.getAccounts("user1", PageRequest.of(0, 25))).thenReturn(getAccountResponseList());
-        mockMvc.perform(get("/account/{userId}", "user1")
+        Mockito.when(accountService.getAccounts("user1", PageRequest.of(0, 10))).thenReturn(getAccountResponseList());
+        mockMvc.perform(get("/v1/account/{userId}", "user1")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(1)))
-                .andExpect(jsonPath("$[0].id", is(1)));
+                .andExpect(jsonPath("$[0].accountNumber", is("110001")));
+    }
+
+    @Test
+    public void givenUserId_whenGetAccount_withInvalidRequestParamType_thenReturn404() throws Exception {
+        Mockito.when(accountService.getTransactions("110001", PageRequest.of(0, 10))).thenReturn(getTxnResponseList());
+        mockMvc.perform(get("/v1/account/{userId}", "user1")
+                .param("page", "0")
+                .param("size", "-1")
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void givenUserId_whenGetAccount_withInvalidPageNo_thenReturn404() throws Exception {
+        Mockito.when(accountService.getTransactions("110001", PageRequest.of(0, 10))).thenReturn(getTxnResponseList());
+        mockMvc.perform(get("/v1/account/{userId}", "user1")
+                .param("page", "-1")
+                .param("size", "10")
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void givenUserId_whenGetAccount_withInvalidPageSize_thenReturn404() throws Exception {
+        Mockito.when(accountService.getTransactions("110001", PageRequest.of(0, 10))).thenReturn(getTxnResponseList());
+        mockMvc.perform(get("/v1/account/{userId}", "user1")
+                .param("page", "0")
+                .param("size", "-1")
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
     }
 
     @Test
     public void givenAccountNo_whenGetTransactions_thenReturnJsonArray() throws Exception {
-        Mockito.when(accountService.getTransactions("110001", PageRequest.of(0, 25))).thenReturn(getTxnResponseList());
-        mockMvc.perform(get("/account/{accountNumber}/transactions", "110001")
+        Mockito.when(accountService.getTransactions("110001", PageRequest.of(0, 10))).thenReturn(getTxnResponseList());
+        mockMvc.perform(get("/v1/account/{accountNumber}/transactions", "110001")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(1)))
-                .andExpect(jsonPath("$[0].id", is(1)))
                 .andExpect(jsonPath("$[0].transactionNumber", is("1100100")));
+    }
+
+    @Test
+    public void givenAccountNo_withInvalidRequestParamType_thenReturn404() throws Exception {
+        Mockito.when(accountService.getTransactions("110001", PageRequest.of(0, 10))).thenReturn(getTxnResponseList());
+        mockMvc.perform(get("/v1/account/{accountNumber}/transactions", "110001")
+                .param("page", "notNumber")
+                .param("size", "notNumber")
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void givenAccountNo_whenGetTransactions_WithInInvalidPageNo_thenReturn404() throws Exception {
+        Mockito.when(accountService.getTransactions("110001", PageRequest.of(0, 10))).thenReturn(getTxnResponseList());
+        mockMvc.perform(get("/v1/account/{accountNumber}/transactions", "110001")
+                .param("page", "-1")
+                .param("size", "10")
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void givenAccountNo_whenGetTransactions_WithInInvalidPageSize_thenReturn404() throws Exception {
+        Mockito.when(accountService.getTransactions("110001", PageRequest.of(0, 10))).thenReturn(getTxnResponseList());
+        mockMvc.perform(get("/v1/account/{accountNumber}/transactions", "110001")
+                .param("page", "0")
+                .param("size", "-1")
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
     }
 
     private List<AccountResponse> getAccountResponseList() {
         List accountList = new ArrayList<AccountResponse>();
-        AccountResponse accountResponse = AccountResponse.builder().id(1L).userId("user1").accountNumber("110001").accountName("Account AU").accountType("Savings")
+        AccountResponse accountResponse = AccountResponse.builder().accountNumber("110001").accountName("Account AU").accountType("Savings")
                 .balanceDate(new Date()).currency("AUD").openingAvailableBalance(new BigDecimal("1000.45")).build();
         accountList.add(accountResponse);
         return accountList;
@@ -69,8 +125,8 @@ public class AccountControllerTest {
 
     private List<TransactionResponse> getTxnResponseList() {
         List txnList = new ArrayList<TransactionResponse>();
-        TransactionResponse transactionResponse = TransactionResponse.builder().id(1L).transactionNumber("1100100").accountNumber("110001").accountName("Account AU").debitCredit("Debit")
-        .creditAmount(new BigDecimal("1000.45")).currency("AUD").debitAmount(new BigDecimal("1000.45")).build();
+        TransactionResponse transactionResponse = TransactionResponse.builder().transactionNumber("1100100").accountNumber("110001").accountName("Account AU").debitCredit("Debit")
+                .creditAmount(new BigDecimal("1000.45")).currency("AUD").debitAmount(new BigDecimal("1000.45")).build();
         txnList.add(transactionResponse);
         return txnList;
     }

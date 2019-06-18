@@ -6,13 +6,13 @@
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
 		<version>2.1.5.RELEASE</version>
-		<relativePath/> <!-- lookup parent from repository -->
+		<relativePath/>
 	</parent>
 	<groupId>com.anz.wholesale</groupId>
 	<artifactId>accountApi</artifactId>
 	<version>1.0.0-SNAPSHOT</version>
 	<name>accountApi</name>
-	<description>Account Enquiry for ANZ Wholesale</description>
+	<description>Account Api for ANZ Wholesale</description>
 
 	<properties>
 		<java.version>1.8</java.version>
@@ -77,15 +77,6 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
-				<!--<configuration>
-					<executable>true</executable>
-					<mainClass>com.anz.wholesale.account.AccountApplication</mainClass>
-					<fork>true</fork>
-					<addResources>true</addResources>
-					<wait>1000</wait>
-					<maxAttempts>180</maxAttempts>
-					<jvmArguments> -Xms512m -Xmx1024m</jvmArguments>
-				</configuration>-->
 			</plugin>
 			<!-- plugin for code coverage report -->
 			<plugin>
@@ -133,7 +124,7 @@
 										<limit>
 											<counter>LINE</counter>
 											<value>COVEREDRATIO</value>
-											<minimum>0.0</minimum>
+											<minimum>0.9</minimum>
 										</limit>
 									</limits>
 								</rule>
@@ -146,13 +137,12 @@
 						<jacoco-agent.destfile>target/jacoco.exec</jacoco-agent.destfile>
 					</systemPropertyVariables>
 					<excludes>
-						<exclude>com/anz/wholesale/account/domain/*.*</exclude>
 						<exclude>com/anz/wholesale/account/jsonbean/*.*</exclude>
+						<exclude>com/anz/wholesale/account/domain/*.*</exclude>
 						<exclude>com/anz/wholesale/account/constant/*.*</exclude>
 						<exclude>com/anz/wholesale/account/config/*.*</exclude>
 						<exclude>com/anz/wholesale/account/exception/*.*</exclude>
-						<exclude>com/anz/wholesale/account/mapper/*.*</exclude>
-						<exclude>com/anz/wholesale/account/starter/*.*</exclude>
+						<exclude>com/anz/wholesale/account/*Application.*</exclude>
 					</excludes>
 				</configuration>
 			</plugin>

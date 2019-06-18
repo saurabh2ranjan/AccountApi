@@ -1,6 +1,6 @@
 package com.anz.wholesale.account.exception;
 
-import com.anz.wholesale.account.jsonbean.AccountErrorResponse;
+import com.anz.wholesale.account.jsonbean.AccountApiError;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -28,7 +28,7 @@ public class AccountApiExceptionHandler extends ResponseEntityExceptionHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     ResponseEntity<Object> handleConstraintViolationException(ConstraintViolationException ex) {
         logger.error("Validation failed for the request parameters." +ex.getMessage());
-        return buildResponseEntity(AccountErrorResponse.builder()
+        return buildResponseEntity(AccountApiError.builder()
                 .status(HttpStatus.BAD_REQUEST)
                 .message(ex.getMessage())
                 .timestamp(LocalDateTime.now())
@@ -47,7 +47,7 @@ public class AccountApiExceptionHandler extends ResponseEntityExceptionHandler {
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(final MethodArgumentNotValidException ex, final HttpHeaders headers, final HttpStatus status, final WebRequest request) {
         log.error("Invalid request field.Error:" + ex.getMessage());
-        return buildResponseEntity(AccountErrorResponse.builder()
+        return buildResponseEntity(AccountApiError.builder()
                 .status(HttpStatus.BAD_REQUEST)
                 .message(ex.getMessage())
                 .timestamp(LocalDateTime.now())
@@ -63,7 +63,7 @@ public class AccountApiExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     protected ResponseEntity<Object> handleMethodArgumentMismatch(MethodArgumentTypeMismatchException ex) {
         logger.error("Method argument type is not valid::" + ex.getMessage() );
-        return buildResponseEntity(AccountErrorResponse.builder()
+        return buildResponseEntity(AccountApiError.builder()
                 .status(HttpStatus.BAD_REQUEST)
                 .message(ex.getMessage())
                 .timestamp(LocalDateTime.now())
@@ -81,14 +81,14 @@ public class AccountApiExceptionHandler extends ResponseEntityExceptionHandler {
     protected ResponseEntity<Object> handleException(Exception ex) {
         ex.printStackTrace();
         logger.error("Generic Exception!!!." + ex.getMessage());
-        return buildResponseEntity(AccountErrorResponse.builder()
+        return buildResponseEntity(AccountApiError.builder()
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .message(ex.getMessage())
                 .timestamp(LocalDateTime.now())
                 .build());
     }
 
-    private ResponseEntity<Object> buildResponseEntity(AccountErrorResponse accountEnquiryError) {
+    private ResponseEntity<Object> buildResponseEntity(AccountApiError accountEnquiryError) {
         return new ResponseEntity<>(accountEnquiryError, accountEnquiryError.getStatus());
     }
 }

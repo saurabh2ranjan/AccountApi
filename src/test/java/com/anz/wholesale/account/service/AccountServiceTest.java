@@ -64,7 +64,7 @@ public class AccountServiceTest {
         assertThat(accountList.size()).isEqualTo(0);
     }
 
-    //@Test
+    @Test
     public void whenTxnFoundForAccountNo() {
         String accountNumber = "1100001";
         Pageable pageable = PageRequest.of(0, 25);
@@ -86,17 +86,15 @@ public class AccountServiceTest {
 
     private List<Account> getAccountList() {
         List<Account> accountList = new ArrayList<Account>();
-        Account account = Account.builder().build();
-        account.setId(1L);
-        account.setAccountNumber("1100001");
-        account.setAccountName("Account AU");
+        Account account = Account.builder().id(1L).accountNumber("110001").accountName("Account AU").build();
         accountList.add(account);
         return accountList;
     }
 
     private List<Transaction> getTxnList() {
         List<Transaction> txnList = new ArrayList<Transaction>();
-        Transaction txn = Transaction.builder().build();
+        Account account = Account.builder().id(1L).accountNumber("110001").accountName("Account AU").build();
+        Transaction txn = Transaction.builder().account(account).build();
         txnList.add(txn);
         return txnList;
     }
