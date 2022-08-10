@@ -25,9 +25,9 @@ Page Size
 
 Other Sample URLs :
 
-http://localhost:8081/v1/account/anz-user-test?page=0
+http://localhost:8081/v1/account/anz-test-user?page=0
 
-http://localhost:8081/v1/account/anz-user-test?page=0&size=10
+http://localhost:8081/v1/account/anz-test-user?page=0&size=10
 
 Method 2# GetTransactions :: Request type: GET
 
